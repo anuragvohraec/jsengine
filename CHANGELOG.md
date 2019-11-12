@@ -1,3 +1,7 @@
+## 2.0.1
+
+- Added JSEngine test case
+
 ## 2.0.0
 
 - This release takes a completely different approach. It uses Jerryscript engine to evaulate the JS code.

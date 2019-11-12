@@ -37,6 +37,16 @@ typedef _runJSCode = Pointer<Utf8> Function(Pointer<Utf8> program);
 DynamicLibrary libjsw = DynamicLibrary.open("libjerryscriptwrapper.so");
 _runJSCode _runJSCodeNative = libjsw.lookup<NativeFunction<_runJSCode>>("runJSCode").asFunction();
 
+
+///Changes the location where js engine needs to look at for the jerryscriptwrapper shared lib
+///
+///Use it for testing purpose only, not tested for how it will behave at run time
+///
+_runJSCode searchNativeLibAt(String pathToLib){
+  libjsw = DynamicLibrary.open("$pathToLib/libjerryscriptwrapper.so");
+  _runJSCodeNative = libjsw.lookup<NativeFunction<_runJSCode>>("runJSCode").asFunction();
+}
+
 ///Runs code inside an isolate
 _runJSInInsolateAndReturnResultFunction(SendPort sendPortFromMain) async{
   ReceivePort receiveDataFromMain = ReceivePort();
