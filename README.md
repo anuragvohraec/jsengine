@@ -21,3 +21,7 @@ JSEngine jsEngine = JSEngine(pathToLibSoFile: "jerryscriptwrapper/build/libjerry
 Please file feature requests and bugs at the [issue tracker][tracker].
 
 [tracker]: https://github.com/anuragvohraec/jsengine/issues
+
+
+## Observation
+If your test are getting hanged, then delete the "build/testfile.dill.track.dill"

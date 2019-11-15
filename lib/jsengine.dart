@@ -29,6 +29,26 @@ class JSEngine{
 
   }
 
+  //Validate the JSCode
+  Future<bool> validateJSCode(String jscode) async{
+    try{
+      ReceivePort receivePortForHandShake = ReceivePort();
+      Isolate isolate = await Isolate.spawn(_validateJSCodeInIsolate, receivePortForHandShake.sendPort);
+
+      SendPort sendPortForSendingPorgram = await receivePortForHandShake.first;
+      ReceivePort receivePortPortJSresult = ReceivePort();
+
+      sendPortForSendingPorgram.send([receivePortPortJSresult.sendPort, jscode]);
+
+      int result = await receivePortPortJSresult.first;
+      return result==1?true:false;
+    }catch(e,s){
+      print(e);
+      print(s);
+      return null;
+    }
+  }
+
 }
 
 
@@ -36,6 +56,13 @@ typedef _runJSCode = Pointer<Utf8> Function(Pointer<Utf8> program);
 
 DynamicLibrary libjsw = DynamicLibrary.open("libjerryscriptwrapper.so");
 _runJSCode _runJSCodeNative = libjsw.lookup<NativeFunction<_runJSCode>>("runJSCode").asFunction();
+
+typedef _validateJSCodeSign = Int32 Function(Pointer<Utf8> program);
+typedef _validateJSCodeFunc = int Function(Pointer<Utf8> program);
+
+_validateJSCodeFunc _validateJSCodeNative = libjsw.lookup<NativeFunction<_validateJSCodeSign>>("validateThisJSCode").asFunction();
+
+
 
 
 ///Changes the location where js engine needs to look at for the jerryscriptwrapper shared lib
@@ -45,6 +72,7 @@ _runJSCode _runJSCodeNative = libjsw.lookup<NativeFunction<_runJSCode>>("runJSCo
 _runJSCode searchNativeLibAt(String pathToLib){
   libjsw = DynamicLibrary.open("$pathToLib/libjerryscriptwrapper.so");
   _runJSCodeNative = libjsw.lookup<NativeFunction<_runJSCode>>("runJSCode").asFunction();
+  _validateJSCodeNative = libjsw.lookup<NativeFunction<_validateJSCodeSign>>("validateThisJSCode").asFunction();
 }
 
 ///Runs code inside an isolate
@@ -68,4 +96,15 @@ String _runJSCodeInsideIsolate(String jscode){
 }
 
 
+///validate JS code
+_validateJSCodeInIsolate(SendPort sendPortFromMain) async{
+  ReceivePort receiveDataFromMain = ReceivePort();
+  sendPortFromMain.send(receiveDataFromMain.sendPort);
 
+  var array = await receiveDataFromMain.first;
+  var sendPortForResult = array[0];
+  String jscode = array[1];
+  Pointer<Utf8> jscodePtr= ExtUtf8.toUtf8(jscode);
+  int result  = _validateJSCodeNative(jscodePtr);
+  sendPortForResult.send(result);
+}

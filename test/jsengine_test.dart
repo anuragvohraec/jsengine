@@ -12,4 +12,21 @@ main(){
     String result = await jsEngine.runJSCode(program);
     expect(result, 'Hello World');
   });
+
+  test("CASE: Validate js code",()async{
+    searchNativeLibAt("jerryscriptwrapper/build");
+    JSEngine jsEngine = JSEngine();
+
+    //testing valid code
+    String p1 = "var helloworld = function (){ return 'Hello World';};helloworld();";
+    bool r1 = await jsEngine.validateJSCode(p1);
+    expect(r1, true);
+
+
+    //testing invalid code
+    String p2 = "functiion(){return jhelllo;}";
+    bool r2 = await jsEngine.validateJSCode(p2);
+    expect(r2, false);
+  });
+
 }
