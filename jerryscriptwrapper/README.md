@@ -13,4 +13,7 @@ cd build
 cmake -DCREATEATESTAPP=OFF ../
 #cmake ../  # will create assume CREATETESTAPP flag as OFF
 #cmake -DCREATEATESTAPP=ON ../  # if you wnat to create a testapp file to test the build ass well.
+#cmake -DCMAKE_BUILD_TYPE=Debug -DCREATEATESTAPP=ON ../  # For debugging
+#cmake -DCMAKE_BUILD_TYPE=Release -DCREATEATESTAPP=ON ../ # For release
+#cmake -DCREATEATESTAPP=ON --build ../ --config Release
 ```

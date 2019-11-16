@@ -1,6 +1,8 @@
 ## 2.0.1
 
-- Added JSEngine test case
+- Added validateJScode to validate a code before running.
+- Improved test cases and error handling
+- runJSCode function now returns error Strings in case its not able to runt he code. The error will be helpful in debugging the issue.
 
 ## 2.0.0
 
